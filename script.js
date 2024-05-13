@@ -10,12 +10,11 @@ function round(playerSelection, computerSelection) {
   const ROCK = "rock";
   const PAPER = "paper";
   const SCISSORS = "scissors";
-  let result = "";
+  let result = null;
 
-  if (playerSelection != ROCK || playerSelection != SCISSORS || playerSelection != PAPER){
+  if (playerSelection !== ROCK && playerSelection !== SCISSORS && playerSelection !== PAPER){
     return 2;
   }
-  
   if (
     (playerSelection === ROCK && computerSelection === PAPER) ||
     (playerSelection === SCISSORS && computerSelection === ROCK) ||
@@ -31,23 +30,74 @@ function round(playerSelection, computerSelection) {
   }
   return result;
 }
-
+let score = {
+  player:0,
+  computer:0
+}
 function playGame(){
-  let map = {
-    player: 0,
-    computer: 0
-  }
+  let container = document.querySelector(".container");
+  let computer_section = document.querySelector(".computer_section");
+  let imgComputer = document.createElement("img");
+  let result = null;
 
-  for (let i=0; i<5; i++){
-    let playerSelection = prompt("Make your choice!");
-    let results = round(playerSelection, getComputerChoice());
-    if (results === 1){
-      map.player++;
-    }else if (results === -1){
-      map.computer++;
+  container.addEventListener("click", (e) => {
+    let target = e.target;
+    let computerChoice = getComputerChoice()
+    result = round(target.value, computerChoice);
+    showComputerSelection(computer_section, computerChoice, imgComputer);
+
+
+    switch(result){
+      case 1:
+        score.player++;
+        break;
+      case -1:
+        score.computer++;
+        break;
     }
-  }
+
+    
+    showScore(score.player, score.computer);
+    showWinner(score.player, score.computer)
+    
+  });
  
 }
-playGame();
+
+function showComputerSelection(computer_section, computerChoice, imgComputer){
+  imgComputer.src = `images/${computerChoice}.png`
+  computer_section.appendChild(imgComputer);
+
+}
+
+function showScore(player, computer){
+  let score_section = document.querySelector(".score_section");
+  score_section.textContent = `You ${player} | Machine ${computer}`
+}
+
+function showWinner(player, computer){
+  let winner_section = document.querySelector(".winner_section");
+  if (player == 5){
+    winner_section.textContent = "You won!"
+    resetGame()
+  }
+  else if (computer == 5){
+    winner_section.textContent = "Machine Won"
+    resetGame();
+  }
+}
+
+function resetGame(){
+  score.player = 0;
+  score.computer = 0;
+}
+
+  
+playGame()
+
+
+  
+
+
+
 
